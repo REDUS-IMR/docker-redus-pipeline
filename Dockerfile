@@ -20,9 +20,10 @@ CMD /etc/run.sh & \
 	-e "REDUStools::preprocess(\"redus/redus.yaml\")" \
 	-e "sink(file = paste0(rootDir, \"/\", basename(dir), \".assessment.log\"))" \
 	-e "if(file.exists(\"data.R\")) {" \
-	-e "print(\"TAF\")" \
+	-e "print(\"TAF source\")" \
+	-e "system(\"apk add R-dev g++\")" \
+	-e "icesTAF::taf.bootstrap()" \
 	-e "source(\"data.R\")" \
-	-e "source(\"input.R\")" \
 	-e "source(\"model.R\")" \
 	-e "source(\"output.R\")" \
 	-e "source(\"report.R\")" \
