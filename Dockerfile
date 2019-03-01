@@ -1,7 +1,7 @@
 FROM redusimr/redus-pipeline
 
 LABEL org.label-schema.license="LGPL-3.0" \
-      org.label-schema.vcs-url="https://github.com/REDUS-IMR/fishdocker" \
+      org.label-schema.vcs-url="https://github.com/REDUS-IMR/docker-redus-pipeline" \
       org.label-schema.vendor="REDUS Project at IMR Norway"
 
 ADD projects /root/workspace/projects
