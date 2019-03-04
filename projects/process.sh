@@ -1,19 +1,22 @@
 #!/bin/sh
 
+ROOT=$(pwd)
+
 for d in */ ; do
 	echo "Processing $d"
-	cd $d
+	cd $ROOT/$d
 	mkdir logs
 
 	# Preprocess REDUS script
 	Rscript -e "sink(file = \"./logs/redus.log\")" \
 	-e "library(Rstox)" \
-        -e "setJavaMemory(size = 2e+09)" \
-        -e "Sys.setenv(R_CONFIG_ACTIVE = \"docker\")" \
+	-e "setJavaMemory(size = 2e+09)" \
+	-e "Sys.setenv(R_CONFIG_ACTIVE = \"docker\")" \
 	-e "REDUStools::preprocess(\"redus/redus.yaml\")"
 
 	# Run assessment
 	Rscript -e "sink(file = \"./logs/assessment.log\")" \
+	-e "Sys.setenv(R_CONFIG_ACTIVE = \"docker\")" \
 	-e "if(file.exists(\"data.R\")) {" \
 	-e "print(\"TAF source\")" \
 	-e "system(\"apk add R-dev g++\")" \
