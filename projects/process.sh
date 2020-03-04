@@ -1,11 +1,19 @@
-#!/bin/sh
+#!/bin/bash
+
+# Init status
+name=()
+redus=()
+assess=()
+echo '{ "name": "all", "redus": 3, "assessement": 3 }' > /tmp/status.json
 
 ROOT=$(pwd)
 
 for d in */ ; do
-	echo "Processing $d"
 	cd $ROOT/$d
-	mkdir logs
+	echo "Processing $d"
+
+	# Get name
+	name+=($d)
 
 	# Preprocess REDUS script
 	Rscript -e "sink(file = \"./logs/redus.log\")" \
@@ -13,6 +21,9 @@ for d in */ ; do
 	-e "setJavaMemory(size = 2e+09)" \
 	-e "Sys.setenv(R_CONFIG_ACTIVE = \"docker\")" \
 	-e "REDUStools::preprocess(\"redus/redus.yaml\")"
+
+	# Get status
+	redus+=($?)
 
 	# Run assessment
 	Rscript -e "sink(file = \"./logs/assessment.log\")" \
@@ -30,5 +41,21 @@ for d in */ ; do
 	-e "system(\"Rscript src/dataplot.R\")" \
 	-e "system(\"make plot forecast\")" \
 	-e "}"
+
+	# Get status
+	assess+=($?)
 done
+
+# Set status
+
+printf -v j1 '"%s",' "${name[@]}"
+printf -v j2 '%s,' "${redus[@]}"
+printf -v j3 '%s,' "${assess[@]}"
+
+echo "{ \"name\":[${j1%,}], \"redus\": [${j2%,}], \"assessement\": [${j3%,}] }" > /tmp/status.json
+
+# Generate report
+cd $ROOT/..
+Rscript -e "REDUStools::doGenReport(\"./projects\")"
+cp ./projects/output.html /tmp
 
