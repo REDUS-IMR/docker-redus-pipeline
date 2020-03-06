@@ -38,8 +38,12 @@ for d in */ ; do
 	-e "source(\"report.R\")" \
 	-e "} else {" \
 	-e "print(\"Stockassessment.org source\")" \
+	-e "system(\"apk add make R-dev g++\")" \
+	-e "install.packages(\"remotes\")" \
+	-e "remotes::install_github(\"fishfollower/SAM/stockassessment\")" \
 	-e "system(\"Rscript src/dataplot.R\")" \
-	-e "system(\"make plot forecast\")" \
+	-e "status <- system(\"make plot forecast\")" \
+	-e "q(save=\"no\", status=status)" \
 	-e "}"
 
 	# Get status
