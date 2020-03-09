@@ -12,5 +12,5 @@ EXPOSE 8888
 
 CMD /etc/run.sh & \
     (./process.sh \
-    && tar czf results.tar.gz * --exclude='.*' ) > global.Rout 2> global.Rerr & \
+    && tar czf results.tar.gz * --exclude='.*' && cp results.tar.gz /tmp/results.tar.gz) > global.Rout 2> global.Rerr & \
     /bin/sh
